@@ -23,29 +23,35 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255', 
-            'email' => 'required|email',
-            'password' => [
-                'required',
-                'string',
-                'min:6',
-                'regex:/^(?=.*[A-Z])(?=.*\d).+$/'
-            ]
-        ]);
-
-        if (User::where('email', $validated['email'])->exists()) {
-            return response()->json(['error' => 'O e-mail já está cadastrado.'], 400);
-        }
-
         try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email',
+                'password' => [
+                    'required',
+                    'string',
+                    'min:6',
+                    'regex:/^(?=.*[A-Z])(?=.*\d).+$/'
+                ],
+                'telefone' => 'required|string|max:15',
+            ]);
+
+            if (User::where('email', $validated['email'])->exists()) {
+                return response()->json(['error' => 'O e-mail já está cadastrado.'], 400);
+            }
+
             $data = $validated;
             $data['password'] = Hash::make($data['password']);
             $user = User::create($data);
             Auth::login($user);
 
             return response()->json([
-                'message' => 'Usuário cadastrado com sucesso.'
+                'message' => 'Usuário cadastrado com sucesso.',
+                'data' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                ]
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -78,7 +84,7 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:users,email,'.$id,
+            'email' => 'sometimes|required|email|unique:users,email,' . $id,
             'password' => [
                 'sometimes',
                 'required',
@@ -89,7 +95,7 @@ class UserController extends Controller
         ]);
 
         try {
-            if(isset($validated['password'])){
+            if (isset($validated['password'])) {
                 $validated['password'] = Hash::make($validated['password']);
             }
             User::findOrFail($id)->update($validated);
@@ -124,10 +130,10 @@ class UserController extends Controller
             if (!Auth::attempt($credentials)) {
                 return response()->json(['error' => 'Credenciais inválidas.'], 401);
             }
-    
+
             $user = Auth::user();
             $token = $user->createToken('auth_token')->plainTextToken;
-    
+
             return response()->json([
                 'token' => $token,
                 'data' => [
