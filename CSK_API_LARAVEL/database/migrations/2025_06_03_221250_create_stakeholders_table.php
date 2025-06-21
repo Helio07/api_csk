@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,7 +12,15 @@ return new class extends Migration
     {
         Schema::create('stakeholders', function (Blueprint $table) {
             $table->id();
+            $table->string('nome');
+            $table->string('cargo')->nullable();
+            $table->string('descricao')->nullable();
+            $table->string('classificacao')->nullable();
+            $table->unsignedBigInteger('projeto_id');
             $table->timestamps();
+
+            // Definir a chave estrangeira
+            $table->foreign('projeto_id')->references('id')->on('projetos')->onDelete('cascade');
         });
     }
 

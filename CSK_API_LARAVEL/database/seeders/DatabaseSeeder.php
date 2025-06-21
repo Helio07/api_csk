@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Projeto;
+use App\Models\Stakeholder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -24,6 +25,14 @@ class DatabaseSeeder extends Seeder
             'area_atuacao' => 'Educação',
             'favorito' => true,
             'user_id' => 1, // Certifique-se de que o usuário com ID 1 existe
+        ]);
+
+        Stakeholder::factory()->create([
+            'nome' => 'Stakeholder Exemplo',
+            'cargo' => 'Gerente',
+            'descricao' => 'Responsável pelo projeto.',
+            'classificacao' => 'Primário',
+            'projeto_id' => 1, // Certifique-se de que o projeto com ID 1 existe
         ]);
     }
 }
