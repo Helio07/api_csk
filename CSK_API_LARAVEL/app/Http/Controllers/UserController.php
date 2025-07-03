@@ -140,6 +140,7 @@ class UserController extends Controller
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
+                    'telefone' => $user->telefone,
                 ]
             ], 200);
         } catch (\Exception $e) {

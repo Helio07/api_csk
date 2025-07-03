@@ -17,7 +17,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['prefix' => 'projeto'], function () {
         Route::get('/', [ProjetoController::class, 'index']);
         Route::post('/', [ProjetoController::class, 'store']);
-        Route::post('/update', [ProjetoController::class, 'update']);
+        Route::put('/{id}', [ProjetoController::class, 'update']);
     });
     Route::group(['prefix' => 'stakeholder'], function () {
         Route::get('/', [StakeholderController::class, 'index']);

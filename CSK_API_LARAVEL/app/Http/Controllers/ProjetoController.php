@@ -10,7 +10,14 @@ class ProjetoController extends Controller
     public function index()
     {
         $userId = auth()->id();
-        return Projeto::where('user_id', $userId)->get();
+        $projetos = Projeto::where('user_id', $userId)->get();
+
+        $projetos->transform(function ($projeto) {
+            unset($projeto->user_id);
+            return $projeto;
+        });
+
+        return $projetos;
     }
 
     public function store(Request $request)
@@ -20,15 +27,18 @@ class ProjetoController extends Controller
             'endereco' => 'nullable|string|max:255',
             'area_atuacao' => 'nullable|string|max:255',
             'favorito' => 'boolean',
+            'descricao' => 'nullable|string|max:1500',
+            'data_inicio' => 'nullable|date',
+            'data_final' => 'nullable|date',
         ]);
 
         $validated['user_id'] = auth()->id();
 
-        $projeto = Projeto::create($validated);
+        Projeto::create($validated);
 
-        return response()->json($projeto, 201);
+        return response()->json(['message' => 'Projeto criado com sucesso'], 201);
     }
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'nome' => 'sometimes|required|string|max:255',
@@ -39,10 +49,10 @@ class ProjetoController extends Controller
 
         $userId = auth()->id();
 
-        $projeto = Projeto::findOrFail($userId);
+        $projeto = Projeto::where('id', $id)->where('user_id', $userId)->firstOrFail();
         $projeto->update($validated);
 
-        return response()->json($projeto, 200);
+        return response()->json(['message' => 'Projeto atualizado com sucesso'], 200);
     }
 
     public function destroy($id)

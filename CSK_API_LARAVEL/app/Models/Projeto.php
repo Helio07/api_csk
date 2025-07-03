@@ -15,6 +15,9 @@ class Projeto extends Model
         'area_atuacao',
         'favorito',
         'user_id',
+        'descricao',      
+        'data_inicio',   
+        'data_final', 
     ];
 
     protected $casts = [
