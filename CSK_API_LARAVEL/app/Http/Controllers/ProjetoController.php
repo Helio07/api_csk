@@ -10,7 +10,10 @@ class ProjetoController extends Controller
     public function index()
     {
         $userId = auth()->id();
-        $projetos = Projeto::where('user_id', $userId)->get();
+        $projetos = Projeto::where('user_id', $userId)
+            ->orderByDesc('favorito')
+            ->orderByDesc('created_at')
+            ->get();
 
         $projetos->transform(function ($projeto) {
             unset($projeto->user_id);
