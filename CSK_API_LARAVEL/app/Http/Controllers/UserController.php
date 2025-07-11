@@ -64,11 +64,15 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
         try {
-            $user = User::findOrFail($id);
-            return response()->json($user, 200);
+            $user = Auth::user();
+            return response()->json([
+                'name' => $user->name,
+                'email' => $user->email,
+                'telefone' => $user->telefone,
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Usuário não encontrado.',
@@ -80,25 +84,19 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
+        $user = Auth::user();
+
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:users,email,' . $id,
-            'password' => [
-                'sometimes',
-                'required',
-                'string',
-                'min:6',
-                'regex:/^(?=.*[A-Z])(?=.*\d).+$/'
-            ]
+            'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
+            'telefone' => 'sometimes|required|string|max:15',
+
         ]);
 
         try {
-            if (isset($validated['password'])) {
-                $validated['password'] = Hash::make($validated['password']);
-            }
-            User::findOrFail($id)->update($validated);
+            $user->update($validated);
             return response()->json([
                 'message' => 'Usuário atualizado com sucesso.'
             ], 200);

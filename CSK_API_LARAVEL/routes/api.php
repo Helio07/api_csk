@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
+Route::get('/', [UserController::class, 'index']);
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['prefix' => 'user'], function () {
-        Route::get('/', [UserController::class, 'index']);
-        Route::get('/{id}', [UserController::class, 'show']);
-        Route::put('/{id}', [UserController::class, 'update']);
+        Route::get('/dados', [UserController::class, 'show']);
+        Route::put('/', [UserController::class, 'update']);
         Route::delete('/{id}', [UserController::class, 'destroy']);
     });
     Route::group(['prefix' => 'projeto'], function () {
