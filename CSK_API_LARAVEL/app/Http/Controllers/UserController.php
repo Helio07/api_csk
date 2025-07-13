@@ -148,4 +148,33 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    public function trocarSenha(Request $request)
+    {
+        $request->validate([
+            'senha_atual' => 'required|string',
+            'nova_senha' => [
+                'required',
+                'string',
+                'min:6',
+                'regex:/^(?=.*[A-Z])(?=.*\d).+$/',
+                'confirmed'
+            ],
+        ]);
+
+        $user = Auth::user();
+        if (!Hash::check($request->senha_atual, $user->password)) {
+            return response()->json([
+                'message' => 'Senha atual incorreta.'
+            ], 403);
+        }
+
+        $user->password = Hash::make($request->nova_senha);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Senha alterada com sucesso.'
+        ], 200);
+    }
+
 }

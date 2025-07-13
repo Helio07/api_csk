@@ -13,6 +13,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/dados', [UserController::class, 'show']);
         Route::put('/', [UserController::class, 'update']);
         Route::delete('/{id}', [UserController::class, 'destroy']);
+        Route::post('/trocar-senha', [UserController::class, 'trocarSenha']);
     });
     Route::group(['prefix' => 'projeto'], function () {
         Route::get('/', [ProjetoController::class, 'index']);
