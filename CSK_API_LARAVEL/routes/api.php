@@ -14,6 +14,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::put('/', [UserController::class, 'update']);
         Route::delete('/{id}', [UserController::class, 'destroy']);
         Route::post('/trocar-senha', [UserController::class, 'trocarSenha']);
+        Route::post('/logout', [UserController::class, 'logout']);
     });
     Route::group(['prefix' => 'projeto'], function () {
         Route::get('/', [ProjetoController::class, 'index']);
